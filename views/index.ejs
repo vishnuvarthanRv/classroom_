@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Classroom Asset Portal</title>
+  <link rel="stylesheet" href="/style.css"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span class="nav-icon">🏫</span>
+      <span>Classroom Asset Portal</span>
+    </div>
+    <div class="nav-actions">
+      <a href="/settings" class="btn btn-ghost">⚙️ Settings</a>
+      <a href="/classroom/new" class="btn btn-primary">+ Add Classroom</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>All Classrooms</h1>
+      <p class="subtitle">Each classroom has one QR code — scan to view all its assets</p>
+    </div>
+
+    <% if(classrooms.length === 0) { %>
+      <div class="empty-state">
+        <div class="empty-icon">🏫</div>
+        <h3>No classrooms yet</h3>
+        <p>Start by adding your first classroom.</p>
+        <a href="/classroom/new" class="btn btn-primary">+ Add Classroom</a>
+      </div>
+    <% } else { %>
+      <div class="classroom-grid">
+        <% classrooms.forEach(c => { %>
+          <div class="classroom-card">
+            <div class="classroom-card-left">
+              <div class="classroom-info">
+                <h2 class="classroom-name"><%= c.name %></h2>
+                <% if(c.building || c.floor) { %>
+                  <p class="classroom-meta">
+                    <% if(c.building) { %><span>🏢 <%= c.building %></span><% } %>
+                    <% if(c.floor) { %><span>📐 Floor <%= c.floor %></span><% } %>
+                  </p>
+                <% } %>
+                <% if(c.description) { %>
+                  <p class="classroom-desc"><%= c.description %></p>
+                <% } %>
+                <div class="asset-count-badge">
+                  <span>📦 <%= c.asset_count %> asset type<%= c.asset_count !== 1 ? 's' : '' %></span>
+                </div>
+              </div>
+              <div class="classroom-actions">
+                <a href="/classroom/<%= c.id %>" class="btn btn-primary">View Assets</a>
+                <a href="/classroom/<%= c.id %>/edit" class="btn btn-secondary">✏️ Edit</a>
+                <form method="POST" action="/classroom/<%= c.id %>/delete" style="display:inline"
+                      onsubmit="return confirm('Delete this classroom and all its assets?')">
+                  <button type="submit" class="btn btn-danger">🗑</button>
+                </form>
+              </div>
+            </div>
+            <div class="classroom-card-right">
+              <div class="qr-mini-box">
+                <p class="qr-label">Scan QR</p>
+                <img src="<%= c.qr_path %>" alt="QR" class="qr-mini"/>
+                <a href="<%= c.qr_path %>" download="QR-<%= c.name %>.png" class="btn btn-ghost btn-sm">⬇️ Download</a>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Settings — Classroom Portal</title>
+  <link rel="stylesheet" href="/style.css"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">
+      <a href="/" class="back-link">← Back</a>
+      <span class="nav-icon">⚙️</span>
+      <span>Settings</span>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>QR Code Settings</h1>
+      <p class="subtitle">Set public URL so QR codes work from any device, anywhere</p>
+    </div>
+
+    <% if(error) { %><div class="alert alert-error"><%= error %></div><% } %>
+    <% if(success) { %><div class="alert alert-success"><%= success %></div><% } %>
+
+    <!-- Current Status -->
+    <div class="settings-status-card">
+      <div class="status-row">
+        <span class="status-label">Current QR Base URL:</span>
+        <code class="status-url"><%= baseUrl %></code>
+      </div>
+      <% if(baseUrl.includes('ngrok') || baseUrl.includes('http') && !baseUrl.includes('localhost') && !baseUrl.match(/\d+\.\d+\.\d+\.\d+/)) { %>
+        <div class="status-badge status-public">🌐 Public URL — works from anywhere!</div>
+      <% } else { %>
+        <div class="status-badge status-local">📶 Local URL — only works on same WiFi</div>
+      <% } %>
+    </div>
+
+    <!-- How to get ngrok URL -->
+    <div class="info-card">
+      <h3>🚀 How to make QR work from any device (internet)</h3>
+      <ol class="steps-list">
+        <li>
+          <strong>Download ngrok</strong> — go to
+          <a href="https://ngrok.com/download" target="_blank">ngrok.com/download</a>
+          and download the Windows version
+        </li>
+        <li>
+          <strong>Extract</strong> the zip — you'll get <code>ngrok.exe</code>
+        </li>
+        <li>
+          <strong>Open a new terminal</strong> in the ngrok folder and run:<br/>
+          <code class="code-block">ngrok http 3000</code>
+        </li>
+        <li>
+          <strong>Copy the URL</strong> shown — it looks like:<br/>
+          <code class="code-block">https://abc123.ngrok-free.app</code>
+        </li>
+        <li>
+          <strong>Paste it below</strong> and click Save — all QR codes will update automatically!
+        </li>
+      </ol>
+    </div>
+
+    <!-- URL Update Form -->
+    <div class="form-card">
+      <h3 style="margin-bottom:16px">Update Public URL</h3>
+      <form method="POST" action="/settings">
+        <div class="form-group">
+          <label>Public URL (ngrok or any public URL)</label>
+          <input type="text" name="public_url" value="<%= baseUrl %>"
+                 placeholder="https://abc123.ngrok-free.app" class="input" required/>
+          <small class="input-hint">No trailing slash. After saving, download & print the new QR codes.</small>
+        </div>
+        <div class="form-actions">
+          <a href="/" class="btn btn-ghost">Cancel</a>
+          <button type="submit" class="btn btn-primary btn-large">
+            💾 Save & Regenerate All QR Codes
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Reset to local -->
+    <div class="form-card" style="margin-top:16px">
+      <h3 style="margin-bottom:16px">Reset to Local Network</h3>
+      <p style="color:var(--gray-500);margin-bottom:16px;font-size:14px">Use this if you're on the same WiFi as the devices that will scan.</p>
+      <form method="POST" action="/settings">
+        <input type="hidden" name="public_url" value="<%= baseUrl.includes('ngrok') ? 'http://10.170.153.13:3000' : baseUrl %>"/>
+        <button type="submit" class="btn btn-secondary">📶 Reset to Local WiFi URL</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%= classroom ? 'Edit' : 'Add' %> Classroom</title>
+  <link rel="stylesheet" href="/style.css"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">
+      <a href="/" class="back-link">← Back</a>
+      <span class="nav-icon">🏫</span>
+      <span><%= classroom ? 'Edit Classroom' : 'Add New Classroom' %></span>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1><%= classroom ? 'Edit: ' + classroom.name : 'Add New Classroom' %></h1>
+      <% if(!classroom) { %><p class="subtitle">A QR code will be auto-generated for this classroom</p><% } %>
+    </div>
+
+    <% if(error) { %><div class="alert alert-error"><%= error %></div><% } %>
+
+    <div class="form-card">
+      <form method="POST" action="/classroom/<%= classroom ? classroom.id + '/edit' : 'new' %>">
+
+        <div class="form-group">
+          <label>Classroom Name <span class="req">*</span></label>
+          <input type="text" name="name" value="<%= classroom ? classroom.name : '' %>"
+                 placeholder="e.g. Lab 1, Room 204, CS Lab..." class="input" required/>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>Building / Block</label>
+            <input type="text" name="building" value="<%= classroom ? classroom.building : '' %>"
+                   placeholder="e.g. Block A, Main Block..." class="input"/>
+          </div>
+          <div class="form-group">
+            <label>Floor</label>
+            <input type="text" name="floor" value="<%= classroom ? classroom.floor : '' %>"
+                   placeholder="e.g. Ground, 1st, 2nd..." class="input"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Description / Notes</label>
+          <textarea name="description" rows="3" class="input textarea"
+                    placeholder="Any notes about this classroom..."><%= classroom ? classroom.description : '' %></textarea>
+        </div>
+
+        <div class="form-actions">
+          <a href="/" class="btn btn-ghost">Cancel</a>
+          <button type="submit" class="btn btn-primary btn-large">
+            <%= classroom ? '💾 Save Changes' : '🏫 Create Classroom & Generate QR' %>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

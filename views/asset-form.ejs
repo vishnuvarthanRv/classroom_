@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%= asset ? 'Edit Asset' : 'Add Asset' %> — <%= classroom.name %></title>
+  <link rel="stylesheet" href="/style.css"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">
+      <a href="/classroom/<%= classroom.id %>" class="back-link">← <%= classroom.name %></a>
+      <span class="nav-icon">📦</span>
+      <span><%= asset ? 'Edit Asset' : 'Add Asset' %></span>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1><%= asset ? 'Edit: ' + asset.name : 'Add Asset to ' + classroom.name %></h1>
+    </div>
+
+    <% if(error) { %><div class="alert alert-error"><%= error %></div><% } %>
+
+    <div class="form-card">
+      <form method="POST" action="<%= asset ? '/asset/' + asset.id + '/edit' : '/classroom/' + classroom.id + '/asset/new' %>">
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Item Name <span class="req">*</span></label>
+            <input type="text" name="name" value="<%= asset ? asset.name : '' %>"
+                   placeholder="e.g. Plastic Chair, HP Desktop..." class="input" required/>
+          </div>
+
+          <div class="form-group">
+            <label>Type <span class="req">*</span></label>
+            <select name="type" class="input select" required>
+              <option value="">-- Select Type --</option>
+              <% ['Chair','Table','PC','CPU','Monitor','Keyboard','Mouse','Projector','Whiteboard','AC','Fan','Light','Bench','Cupboard','Other'].forEach(t => { %>
+                <option value="<%= t %>" <%= asset && asset.type===t ? 'selected' : '' %>><%= t %></option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Quantity <span class="req">*</span></label>
+            <input type="number" name="quantity" value="<%= asset ? asset.quantity : '' %>"
+                   placeholder="e.g. 30" class="input" min="1" required/>
+          </div>
+
+          <div class="form-group">
+            <label>Condition <span class="req">*</span></label>
+            <select name="condition" class="input select" required>
+              <option value="">-- Select --</option>
+              <% ['Good','Fair','Needs Repair','Damaged'].forEach(c => { %>
+                <option value="<%= c %>" <%= asset && asset.condition_status===c ? 'selected' : '' %>><%= c %></option>
+              <% }) %>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea name="description" rows="2" class="input textarea"
+                    placeholder="Any additional notes..."><%= asset ? asset.description : '' %></textarea>
+        </div>
+
+        <div class="form-actions">
+          <a href="/classroom/<%= classroom.id %>" class="btn btn-ghost">Cancel</a>
+          <button type="submit" class="btn btn-primary btn-large">
+            <%= asset ? '💾 Save Changes' : '➕ Add Asset' %>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
