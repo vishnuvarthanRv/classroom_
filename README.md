@@ -20,3 +20,4 @@
 - classroom.db   → Database (auto-created on first run)
 - views/         → HTML templates
 - public/        → CSS + QR code images
+"# classroom_" 
